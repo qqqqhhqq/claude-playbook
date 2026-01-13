@@ -28,35 +28,76 @@ pip install -r requirements.txt  # 在各自的目录中运行
 
 ### 2. 配置 Claude Code
 
-找到 Claude Code 的配置文件：
+**方式一：自动创建配置文件（Linux/macOS）**
+
+在项目根目录执行：
+
+```bash
+# 获取项目绝对路径
+PROJECT_PATH=$(pwd)
+
+# 创建配置目录
+mkdir -p ~/.config/claude-code
+
+# 生成配置文件
+cat > ~/.config/claude-code/config.json << EOF
+{
+  "mcpServers": {
+    "web-search": {
+      "command": "node",
+      "args": ["$PROJECT_PATH/mcps/web-search-mcp/server.js"]
+    },
+    "project-analyzer": {
+      "command": "python3",
+      "args": ["$PROJECT_PATH/mcps/project-analyzer-mcp/server.py"]
+    },
+    "file-ops": {
+      "command": "python3",
+      "args": ["$PROJECT_PATH/mcps/file-ops-mcp/server.py"]
+    }
+  }
+}
+EOF
+
+# 验证配置
+cat ~/.config/claude-code/config.json
+```
+
+**方式二：手动编辑**
+
+找到配置文件并手动编辑：
 
 - **Linux**: `~/.config/claude-code/config.json`
 - **macOS**: `~/Library/Application Support/Claude Code/config.json`
 - **Windows**: `%APPDATA%\Claude Code\config.json`
 
-添加以下配置（替换路径为实际路径）：
+配置内容示例（请将路径替换为实际的项目路径）：
 
 ```json
 {
   "mcpServers": {
     "web-search": {
       "command": "node",
-      "args": ["/absolute/path/to/claude-playbook/mcps/web-search-mcp/server.js"]
+      "args": ["/home/chenxin/code/claude-playbook/mcps/web-search-mcp/server.js"]
     },
     "project-analyzer": {
       "command": "python3",
-      "args": ["/absolute/path/to/claude-playbook/mcps/project-analyzer-mcp/server.py"]
+      "args": ["/home/chenxin/code/claude-playbook/mcps/project-analyzer-mcp/server.py"]
     },
     "file-ops": {
       "command": "python3",
-      "args": ["/absolute/path/to/claude-playbook/mcps/file-ops-mcp/server.py"],
-      "env": {
-        "FILE_OPS_ROOT": "/your/project/path"
-      }
+      "args": ["/home/chenxin/code/claude-playbook/mcps/file-ops-mcp/server.py"]
     }
   }
 }
 ```
+
+> **注意**：`file-ops-mcp` 默认只允许访问当前工作目录。如需限制访问范围，可添加 `env` 配置：
+> ```json
+> "env": {
+>   "FILE_OPS_ROOT": "/your/allowed/path"
+> }
+> ```
 
 ### 3. 重启 Claude Code
 
@@ -64,12 +105,26 @@ pip install -r requirements.txt  # 在各自的目录中运行
 
 ### 4. 使用 MCP 工具
 
-在 Claude Code 中，你可以直接调用 MCP 提供的工具。例如：
+重启 Claude Code 后，会自动加载 MCP 服务器。在对话中可以直接使用：
 
+**网络搜索 (web-search-mcp)**
 ```
-请搜索 "TypeScript 最新版本"
+请搜索 "TypeScript 5.0 新特性"
+搜索 "Python asyncio 最佳实践"
+```
+
+**项目分析 (project-analyzer-mcp)**
+```
 分析当前项目的目录结构
-搜索项目中包含 "TODO" 的文件
+统计项目的代码行数，按语言分类显示
+列出这个项目用了哪些依赖包
+```
+
+**文件操作 (file-ops-mcp)**
+```
+读取 README.md 的内容
+搜索项目中所有包含 "TODO" 的 Python 文件
+在项目中查找所有 .json 配置文件
 ```
 
 ## 测试
