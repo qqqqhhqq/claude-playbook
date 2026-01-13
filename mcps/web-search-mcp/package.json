@@ -1,0 +1,20 @@
+{
+  "name": "web-search-mcp",
+  "version": "1.0.0",
+  "description": "MCP server for web search using DuckDuckGo",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node test.js"
+  },
+  "keywords": ["mcp", "search", "duckduckgo"],
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.4",
+    "duckduckgo-search-api": "^1.0.1"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
